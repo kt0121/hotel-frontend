@@ -12,6 +12,7 @@ export const useGetAPI = <T = any>(endpoint: string) => {
     const headers = new Headers();
     headers.set("X-ACCESS-TOKEN", token!);
     const query = new URLSearchParams(variables);
+    console.log(query.toString());
     setLoading(true);
     fetch(`${serverHost}${endpoint}?${query}`, {
       method: "GET",
@@ -22,7 +23,10 @@ export const useGetAPI = <T = any>(endpoint: string) => {
         setStatus(res.status);
         return res.status === 200 ? res.json() : { data: {} };
       })
-      .then((json) => setData(json?.data))
+      .then((json) => {
+        console.log(json);
+        return setData(json);
+      })
       .catch((e) => console.error(e))
       .finally(() => setLoading(false));
   };

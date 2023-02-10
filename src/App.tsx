@@ -8,7 +8,9 @@ import { Style } from "./types/style";
 import ApiProvider from "provider/api";
 import TokenProvider, { TokenContext } from "provider/token";
 import SetTokenProvider, { SetTokenContext } from "provider/setToken";
-import TokenForm from "components/TokenForm";
+import TokenForm from "components/Header/TokenForm";
+import Header from "container/Header";
+import Content from "container/Content";
 
 const { Header: AntdHeader, Content: AntdContent } = Layout;
 
@@ -22,9 +24,8 @@ const App = () => {
       <TokenProvider token={token}>
         <SetTokenProvider setToken={setAppToken}>
           <Layout style={style.layout}>
-            <TokenForm />
-            <AntdHeader>Header</AntdHeader>
-            <AntdContent style={style.content}>Content</AntdContent>
+            <Header />
+            <Content />
           </Layout>
         </SetTokenProvider>
       </TokenProvider>
@@ -36,6 +37,7 @@ const style: Style = {
   layout: {
     textAlign: "center",
     width: "100vw",
+    minHeight: "100vh",
   },
   content: {
     textAlign: "center",
@@ -43,7 +45,7 @@ const style: Style = {
     minWidth: "1000px",
     maxWidth: "1400px",
     margin: "0 auto",
-    background: "red",
+    height: "100%",
   },
 };
 export default App;
