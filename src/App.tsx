@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { Layout, Space } from "antd";
 
-function App() {
+import "antd/dist/reset.css";
+
+import "./App.css";
+import { Style } from "./types/style";
+import ApiProvider from "provider/api";
+import TokenProvider, { TokenContext } from "provider/token";
+import SetTokenProvider, { SetTokenContext } from "provider/setToken";
+import TokenForm from "components/TokenForm";
+
+const { Header: AntdHeader, Content: AntdContent } = Layout;
+
+const App = () => {
+  const [token, setToken] = useState<TokenContext["token"]>(null);
+  const setAppToken: SetTokenContext["setToken"] = (token) => {
+    setToken(token);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ApiProvider serverHost="https://track-challenge-api-labrat.herokuapp.com/hotel-reservation">
+      <TokenProvider token={token}>
+        <SetTokenProvider setToken={setAppToken}>
+          <Layout style={style.layout}>
+            <TokenForm />
+            <AntdHeader>Header</AntdHeader>
+            <AntdContent style={style.content}>Content</AntdContent>
+          </Layout>
+        </SetTokenProvider>
+      </TokenProvider>
+    </ApiProvider>
   );
-}
+};
 
+const style: Style = {
+  layout: {
+    textAlign: "center",
+    width: "100vw",
+  },
+  content: {
+    textAlign: "center",
+    width: "80vw",
+    minWidth: "1000px",
+    maxWidth: "1400px",
+    margin: "0 auto",
+    background: "red",
+  },
+};
 export default App;
