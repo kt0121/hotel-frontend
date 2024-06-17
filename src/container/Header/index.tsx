@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Layout, Space } from "antd";
 import TokenForm from "components/Header/TokenForm";
 import { useGetAPI } from "hooks/useGetAPI";
 import { useSetTokenContext } from "provider/setToken";
@@ -8,23 +8,22 @@ import { ResTokenCheck } from "types/response";
 import { Style } from "types/style";
 
 const { Header: AntdHeader } = Layout;
-
+const uuid = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
+    .split("")
+    .map((c) => {
+      switch (c) {
+        case "x":
+          return ((Math.random() * 16) | 0).toString(16);
+        case "y":
+          return (((Math.random() * 4) | 0) + 8).toString(16);
+        default:
+          return c;
+      }
+    })
+    .join("");
+};
 const Header: React.FC = () => {
-  const uuid = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
-      .split("")
-      .map((c) => {
-        switch (c) {
-          case "x":
-            return ((Math.random() * 16) | 0).toString(16);
-          case "y":
-            return (((Math.random() * 4) | 0) + 8).toString(16);
-          default:
-            return c;
-        }
-      })
-      .join("");
-  };
   const defaultToken = uuid();
   const [uncheckedToken, setUncheckedToken] = useState<string>(defaultToken);
   const { token } = useTokenContext();
@@ -42,15 +41,13 @@ const Header: React.FC = () => {
   };
 
   useEffect(() => {
-    if (uncheckedToken) {
-      setIsTokenValid(
-        Boolean(
-          uncheckedToken.match(
-            /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
-          )
+    setIsTokenValid(
+      Boolean(
+        uncheckedToken.match(
+          /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
         )
-      );
-    }
+      )
+    );
   }, [uncheckedToken]);
   useEffect(() => {
     if (!isTokenCheckLoading) {
@@ -58,6 +55,7 @@ const Header: React.FC = () => {
         setToken(uncheckedToken);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getTokenCheckStatus, isTokenCheckLoading]);
 
   return (
@@ -81,5 +79,6 @@ const style: Style = {
     minWidth: "1000px",
     maxWidth: "1400px",
     margin: "0 auto",
+    background: "#f5f5f5",
   },
 };

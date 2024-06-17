@@ -7,15 +7,15 @@ function exec(cmd, args, options) {
     let stdout = "";
     let stderr = "";
     p = cp.spawn(cmd, args, options);
-    p.stdout.on("data", (data) => (stdout += data));
-    p.stderr.on("data", (data) => (stderr += data));
+    p.stdout.on("data", (data) => stdout += data);
+    p.stderr.on("data", (data) => stderr += data);
     p.on("close", (code) => {
       if (code === 0) {
         resolve(stdout);
       } else {
         reject(stderr);
       }
-    });
+    })
   });
 }
 
@@ -38,30 +38,37 @@ function execout(cmd, args, options) {
       } else {
         reject(stderr);
       }
-    });
+    })
   });
 }
 
-const targets = ["config", "src", "static", "public"];
+const targets = [
+  "config",
+  "src",
+  "static",
+  "public",
+];
 
-const ignores = ["package.json"];
+const ignores = [
+  "package.json",  
+];
 
-(async function () {
+(async function() {
   const command = process.argv[2];
   const args = process.argv.slice(3);
-  switch (command) {
-    case "clone":
+  switch(command) {
+    case "clone": 
       await clone(args);
       await addAll();
       break;
     case "test":
     case "run":
-      await test();
+      await test();  
   }
-})().catch((e) => console.error(e));
+})().catch(e => console.error(e));
 
 async function add(file) {
-  await exec("track", ["add", file]);
+  await exec("track", ["add", file]);  
 }
 
 async function addAll(files) {
@@ -71,23 +78,20 @@ async function addAll(files) {
 async function clone(args) {
   console.log("=== Downloading challenge ===");
   const stdout = await exec("track", [["clone"], args].flat());
-  stdout.split("\n").forEach((l) => console.log(`> ${l}`));
-  const dirname = (/cd (.+_challenge_\d+) && track status/.exec(stdout) ||
-    [])[1];
+  stdout.split("\n").forEach(l => console.log(`> ${l}`));
+  const dirname = (/cd (.+_challenge_\d+) && track status/.exec(stdout) || [])[1];
   const dir = await fs.readdir(dirname);
   for (const f of dir) {
     if (ignores.indexOf(f) >= 0) continue;
     await fs.move(dirname + "/" + f, "./" + f, { overwrite: true });
   }
   fs.remove(dirname);
-  console.log(targets);
   console.log("=== Adding all files ===");
   await addAll(targets);
-  console.log("ok!");
 }
 
 async function test() {
-  console.log("=== Build applicaiton ===");
+  console.log("=== Build applicaiton ===");  
   await execout("npm", ["run", "build"]);
   console.log("=== Adding all files ===");
   await addAll(targets);

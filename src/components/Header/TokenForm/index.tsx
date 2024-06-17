@@ -32,7 +32,7 @@ const TokenForm: React.FC<Props> = ({
         onClick={onAccessClick}
         disabled={Boolean(token) || !isTokenValid}
       >
-        Submit
+        Access
       </Button>
     </Space>
   );

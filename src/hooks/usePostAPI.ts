@@ -1,21 +1,21 @@
 import * as React from "react";
 import { useApiContext } from "provider/api";
 
-export const useGetAPI = <T = any>(endpoint: string) => {
+export const usePostAPI = <T = any>(endpoint: string) => {
   const { serverHost } = useApiContext();
   const [data, setData] = React.useState<T | null>(null);
-  const [loading, setLoading] = React.useState<boolean | null>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const [status, setStatus] = React.useState<number | null>(null);
 
-  const get = (token: string, variables?: any) => {
+  const post = (token: string, body?: any) => {
     const headers = new Headers();
     headers.set("X-ACCESS-TOKEN", token!);
-    const query = new URLSearchParams(variables);
+    headers.set("Content-Type", "application/json");
     setLoading(true);
-    fetch(`${serverHost}${endpoint}?${query}`, {
-      method: "GET",
-      mode: "cors",
+    fetch(`${serverHost}${endpoint}`, {
+      method: "POST",
       headers: headers,
+      body: JSON.stringify(body),
     })
       .then((res) => {
         setStatus(res.status);
@@ -28,8 +28,8 @@ export const useGetAPI = <T = any>(endpoint: string) => {
       .finally(() => setLoading(false));
   };
 
-  return [get, { data, loading, status }] as [
-    typeof get,
+  return [post, { data, loading, status }] as [
+    typeof post,
     { data: T; loading: boolean; status: number | null }
   ];
 };

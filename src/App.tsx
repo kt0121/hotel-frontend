@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Layout, Space } from "antd";
+import { useState } from "react";
+import { Divider, Layout, Space } from "antd";
 
 import "antd/dist/reset.css";
 
@@ -8,11 +8,9 @@ import { Style } from "./types/style";
 import ApiProvider from "provider/api";
 import TokenProvider, { TokenContext } from "provider/token";
 import SetTokenProvider, { SetTokenContext } from "provider/setToken";
-import TokenForm from "components/Header/TokenForm";
 import Header from "container/Header";
 import Content from "container/Content";
-
-const { Header: AntdHeader, Content: AntdContent } = Layout;
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
   const [token, setToken] = useState<TokenContext["token"]>(null);
@@ -25,6 +23,7 @@ const App = () => {
         <SetTokenProvider setToken={setAppToken}>
           <Layout style={style.layout}>
             <Header />
+            <Divider />
             <Content />
           </Layout>
         </SetTokenProvider>
